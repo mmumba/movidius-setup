@@ -1,0 +1,750 @@
+./install-opencv.sh
+OpenCV Installation Starting
+
+OpenCV already setup for python3
+
+
+make examples starting.
+(cd examples; make)
+make[1]: Entering directory '/ncsdk/examples'
+make -C apps/. 
+make[2]: Entering directory '/ncsdk/examples/apps'
+make -C hello_ncs_py/. 
+make[3]: Entering directory '/ncsdk/examples/apps/hello_ncs_py'
+nothing to make, use 'make run' to run.
+make[3]: Leaving directory '/ncsdk/examples/apps/hello_ncs_py'
+make -C multistick_cpp/. 
+make[3]: Entering directory '/ncsdk/examples/apps/multistick_cpp'
+
+making googlenet
+(cd ../../caffe/GoogLeNet; make compile; cd ../../apps/multistick_cpp; cp ../../caffe/GoogLeNet/graph ./googlenet.graph;)
+make[4]: Entering directory '/ncsdk/examples/caffe/GoogLeNet'
+
+making prereqs
+(cd ../../data/ilsvrc12; make)
+make[5]: Entering directory '/ncsdk/examples/data/ilsvrc12'
+make[5]: Leaving directory '/ncsdk/examples/data/ilsvrc12'
+
+making prototxt
+Prototxt file already exists
+
+making caffemodel
+caffemodel file already exists
+
+making compile
+mvNCCompile -w bvlc_googlenet.caffemodel -s 12 deploy.prototxt
+[1mmvNCCompile v02.00, Copyright @ Intel Corporation 2017[0m
+
+Layer  inception_3b/1x1  forced to im2col_v2, because its output is used in concat
+Blob generated
+make[4]: Leaving directory '/ncsdk/examples/caffe/GoogLeNet'
+
+making squeezenet
+(cd ../../caffe/SqueezeNet; make compile; cd ../../apps/multistick_cpp; cp ../../caffe/SqueezeNet/graph ./squeezenet.graph;)
+make[4]: Entering directory '/ncsdk/examples/caffe/SqueezeNet'
+
+making prereqs
+(cd ../../data/ilsvrc12; make)
+make[5]: Entering directory '/ncsdk/examples/data/ilsvrc12'
+make[5]: Leaving directory '/ncsdk/examples/data/ilsvrc12'
+LICENSE file already exists
+
+making prototxt
+Prototxt file already exists
+
+making caffemodel
+caffemodel file already exists
+
+making compile
+mvNCCompile -w squeezenet_v1.0.caffemodel -s 12 deploy.prototxt
+[1mmvNCCompile v02.00, Copyright @ Intel Corporation 2017[0m
+
+Blob generated
+make[4]: Leaving directory '/ncsdk/examples/caffe/SqueezeNet'
+
+making multistick_cpp
+cp googlenet.graph cpp/googlenet.graph;
+cp squeezenet.graph cpp/squeezenet.graph;
+g++ cpp/multistick.cpp -o cpp/multistick_cpp -lmvnc
+Created cpp/multistick_cpp executable
+make[3]: Leaving directory '/ncsdk/examples/apps/multistick_cpp'
+make -C hello_ncs_cpp/. 
+make[3]: Entering directory '/ncsdk/examples/apps/hello_ncs_cpp'
+
+making hello_ncs_cpp
+g++ cpp/hello_ncs.cpp -o cpp/hello_ncs_cpp -lmvnc
+Created cpp/hello_ncs_cpp executable
+make[3]: Leaving directory '/ncsdk/examples/apps/hello_ncs_cpp'
+make[2]: Leaving directory '/ncsdk/examples/apps'
+make -C caffe/. 
+make[2]: Entering directory '/ncsdk/examples/caffe'
+make -C AlexNet 
+make[3]: Entering directory '/ncsdk/examples/caffe/AlexNet'
+
+making prereqs
+(cd ../../data/ilsvrc12; make)
+make[4]: Entering directory '/ncsdk/examples/data/ilsvrc12'
+make[4]: Leaving directory '/ncsdk/examples/data/ilsvrc12'
+chmod +x run.py
+
+making prototxt
+Prototxt file already exists
+
+making profile
+mvNCProfile deploy.prototxt -s 12
+[1mmvNCProfile v02.00, Copyright @ Intel Corporation 2017[0m
+
+[91m****** WARNING: using empty weights ******[0m
+Blob generated
+USB: Transferring Data...
+[94mTime to Execute :  96.6  ms[39m
+USB: Myriad Execution Finished
+[94mTime to Execute :  91.27  ms[39m
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+Network Summary
+
+Detailed Per Layer Profile
+                                                               Bandwidth   time
+#    Name                                                MFLOPs  (MB/s)    (ms)
+===============================================================================
+0    data                                                   0.0 65185.8   0.005
+1    conv1                                                210.8  7439.5   4.808
+2    norm1                                                  0.0   723.3   0.766
+3    pool1                                                  0.6  1256.7   0.441
+4    pool1_s0                                               0.0  1430.1   0.047
+5    conv2_p0                                             223.9   598.7   6.074
+6    pool1_s1                                               0.0  1618.5   0.041
+7    conv2_p1                                             223.9   610.9   5.953
+8    norm2                                                  0.0   633.1   0.562
+9    pool2                                                  0.4  1327.4   0.268
+10   conv3                                                299.0   391.0   6.215
+11   conv3_s0                                               0.0  1475.1   0.042
+12   conv4_p0                                             112.1   552.7   3.167
+13   conv3_s1                                               0.0  1692.3   0.037
+14   conv4_p1                                             112.1   557.8   3.138
+15   conv4_p0_s0                                            0.0  1725.8   0.036
+16   conv5_p0                                              74.8   620.3   2.479
+17   conv4_p0_s1                                            0.0  1733.7   0.036
+18   conv5_p1                                              74.8   613.2   2.508
+19   pool5                                                  0.1   984.7   0.084
+20   fc6                                                    0.0  2157.9  33.374
+21   fc7                                                    0.0  2149.7  14.889
+22   fc8                                                    0.0  2654.0   2.947
+23   prob                                                   0.0    10.0   0.191
+-------------------------------------------------------------------------------
+                                   Total inference time                   88.11
+-------------------------------------------------------------------------------
+Generating Profile Report 'output_report.html'...
+
+making caffemodel
+caffemodel file already exists
+
+making check
+mvNCCheck -w bvlc_alexnet.caffemodel -i ../../data/images/cat.jpg -s 12 -id 281 deploy.prototxt -M 120 -S 255 -metric top1
+[1mmvNCCheck v02.00, Copyright @ Intel Corporation 2017[0m
+
+Blob generated
+USB: Transferring Data...
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+
+Result: Validation Pass
+
+Result:  (1000,)
+1) 281 0.43872
+Expected:  (1000,)
+1) 281 0.44238
+------------------------------------------------------------
+ Obtained values 
+------------------------------------------------------------
+ Obtained Min Pixel Accuracy: 0.9933775290846825% (max allowed=2%), Pass
+ Obtained Average Pixel Accuracy: 0.0026634368623490445% (max allowed=1%), Pass
+ Obtained Percentage of wrong values: 0.0% (max allowed=0%), Pass
+ Obtained Pixel-wise L2 error: 0.04107047868710842% (max allowed=1%), Pass
+ Obtained Global Sum Difference: 0.011782586574554443
+------------------------------------------------------------
+
+making compile
+mvNCCompile -w bvlc_alexnet.caffemodel -s 12 deploy.prototxt
+[1mmvNCCompile v02.00, Copyright @ Intel Corporation 2017[0m
+
+Blob generated
+
+making cpp
+g++ cpp/run.cpp -o cpp/run_cpp -lmvnc
+make[3]: Leaving directory '/ncsdk/examples/caffe/AlexNet'
+make -C GoogLeNet 
+make[3]: Entering directory '/ncsdk/examples/caffe/GoogLeNet'
+
+making prereqs
+(cd ../../data/ilsvrc12; make)
+make[4]: Entering directory '/ncsdk/examples/data/ilsvrc12'
+make[4]: Leaving directory '/ncsdk/examples/data/ilsvrc12'
+
+making prototxt
+Prototxt file already exists
+
+making profile
+mvNCProfile deploy.prototxt -s 12
+[1mmvNCProfile v02.00, Copyright @ Intel Corporation 2017[0m
+
+[91m****** WARNING: using empty weights ******[0m
+Layer  inception_3b/1x1  forced to im2col_v2, because its output is used in concat
+Blob generated
+USB: Transferring Data...
+[94mTime to Execute :  115.78  ms[39m
+USB: Myriad Execution Finished
+[94mTime to Execute :  97.13  ms[39m
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+Network Summary
+
+Detailed Per Layer Profile
+                                                               Bandwidth   time
+#    Name                                                MFLOPs  (MB/s)    (ms)
+===============================================================================
+0    data                                                   0.0 56686.1   0.005
+1    conv1/7x7_s2                                         236.0  2453.9   5.743
+2    pool1/3x3_s2                                           1.8  1348.2   1.136
+3    pool1/norm1                                            0.0   711.5   0.538
+4    conv2/3x3_reduce                                      25.7   467.3   0.836
+5    conv2/3x3                                            693.6   305.8  11.961
+6    conv2/norm2                                            0.0   769.7   1.492
+7    pool2/3x3_s2                                           1.4  1403.2   0.818
+8    inception_3a/1x1                                      19.3   556.1   0.559
+9    inception_3a/3x3_reduce                               28.9   458.3   0.703
+10   inception_3a/3x3                                     173.4   319.9   4.705
+11   inception_3a/5x5_reduce                                4.8  1037.3   0.282
+12   inception_3a/5x5                                      20.1   716.2   0.871
+13   inception_3a/pool                                      1.4   648.7   0.443
+14   inception_3a/pool_proj                                 9.6   655.8   0.456
+15   inception_3b/1x1                                      51.4   447.2   0.996
+16   inception_3b/3x3_reduce                               51.4   443.8   1.004
+17   inception_3b/3x3                                     346.8   266.5   8.061
+18   inception_3b/5x5_reduce                               12.8   880.6   0.453
+19   inception_3b/5x5                                     120.4   537.0   2.509
+20   inception_3b/pool                                      1.8   678.5   0.564
+21   inception_3b/pool_proj                                25.7   633.2   0.654
+22   pool3/3x3_s2                                           0.8  1217.2   0.590
+23   inception_4a/1x1                                      36.1   374.1   0.951
+24   inception_4a/3x3_reduce                               18.1   490.5   0.545
+25   inception_4a/3x3                                      70.4   306.3   2.185
+26   inception_4a/5x5_reduce                                3.0   761.1   0.255
+27   inception_4a/5x5                                       7.5   457.2   0.412
+28   inception_4a/pool                                      0.8   603.4   0.297
+29   inception_4a/pool_proj                                12.0   617.3   0.386
+30   inception_4b/1x1                                      32.1   340.5   1.022
+31   inception_4b/3x3_reduce                               22.5   403.0   0.746
+32   inception_4b/3x3                                      88.5   280.7   2.890
+33   inception_4b/5x5_reduce                                4.8   572.7   0.375
+34   inception_4b/5x5                                      15.1   339.6   0.885
+35   inception_4b/pool                                      0.9   615.5   0.311
+36   inception_4b/pool_proj                                12.8   575.4   0.441
+37   inception_4c/1x1                                      25.7   415.2   0.763
+38   inception_4c/3x3_reduce                               25.7   403.5   0.784
+39   inception_4c/3x3                                     115.6   277.4   3.597
+40   inception_4c/5x5_reduce                                4.8   573.0   0.375
+41   inception_4c/5x5                                      15.1   341.4   0.881
+42   inception_4c/pool                                      0.9   616.0   0.311
+43   inception_4c/pool_proj                                12.8   578.7   0.439
+44   inception_4d/1x1                                      22.5   352.8   0.853
+45   inception_4d/3x3_reduce                               28.9   489.7   0.678
+46   inception_4d/3x3                                     146.3   403.4   2.978
+47   inception_4d/5x5_reduce                                6.4   736.2   0.302
+48   inception_4d/5x5                                      20.1   407.6   0.981
+49   inception_4d/pool                                      0.9   630.5   0.304
+50   inception_4d/pool_proj                                12.8   628.7   0.404
+51   inception_4e/1x1                                      53.0   296.9   1.535
+52   inception_4e/3x3_reduce                               33.1   279.6   1.282
+53   inception_4e/3x3                                     180.6   287.5   4.948
+54   inception_4e/5x5_reduce                                6.6   492.9   0.466
+55   inception_4e/5x5                                      40.1   378.6   1.322
+56   inception_4e/pool                                      0.9   620.0   0.318
+57   inception_4e/pool_proj                                26.5   447.1   0.730
+58   pool4/3x3_s2                                           0.4  1246.1   0.250
+59   inception_5a/1x1                                      20.9   623.4   0.777
+60   inception_5a/3x3_reduce                               13.0   567.9   0.584
+61   inception_5a/3x3                                      45.2   595.0   1.713
+62   inception_5a/5x5_reduce                                2.6   327.8   0.392
+63   inception_5a/5x5                                      10.0   460.9   0.599
+64   inception_5a/pool                                      0.4   533.1   0.146
+65   inception_5a/pool_proj                                10.4   514.3   0.547
+66   inception_5b/1x1                                      31.3   615.9   1.117
+67   inception_5b/3x3_reduce                               15.7   607.7   0.629
+68   inception_5b/3x3                                      65.0   591.9   2.422
+69   inception_5b/5x5_reduce                                3.9   372.5   0.413
+70   inception_5b/5x5                                      15.1   475.6   0.865
+71   inception_5b/pool                                      0.4   531.3   0.146
+72   inception_5b/pool_proj                                10.4   512.4   0.549
+73   pool5/7x7_s1                                           0.1   405.1   0.236
+74   loss3/classifier                                       0.0  2552.5   0.766
+75   prob                                                   0.0    10.0   0.191
+-------------------------------------------------------------------------------
+                                   Total inference time                   93.68
+-------------------------------------------------------------------------------
+Generating Profile Report 'output_report.html'...
+
+making caffemodel
+caffemodel file already exists
+
+making check
+mvNCCheck -w bvlc_googlenet.caffemodel -i ../../data/images/nps_electric_guitar.png -s 12 -id 546  deploy.prototxt -S 255 -M 110 -metric top1
+[1mmvNCCheck v02.00, Copyright @ Intel Corporation 2017[0m
+
+Layer  inception_3b/1x1  forced to im2col_v2, because its output is used in concat
+Blob generated
+USB: Transferring Data...
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+
+Result: Validation Pass
+
+Result:  (1000,)
+1) 546 0.99609
+Expected:  (1000,)
+1) 546 0.99609
+------------------------------------------------------------
+ Obtained values 
+------------------------------------------------------------
+ Obtained Min Pixel Accuracy: 0.0032552085031056777% (max allowed=2%), Pass
+ Obtained Average Pixel Accuracy: 7.264380030846951e-06% (max allowed=1%), Pass
+ Obtained Percentage of wrong values: 0.0% (max allowed=0%), Pass
+ Obtained Pixel-wise L2 error: 0.00011369892179413199% (max allowed=1%), Pass
+ Obtained Global Sum Difference: 7.236003875732422e-05
+------------------------------------------------------------
+
+making compile
+mvNCCompile -w bvlc_googlenet.caffemodel -s 12 deploy.prototxt
+[1mmvNCCompile v02.00, Copyright @ Intel Corporation 2017[0m
+
+Layer  inception_3b/1x1  forced to im2col_v2, because its output is used in concat
+Blob generated
+
+making cpp
+g++ cpp/run.cpp -o cpp/run_cpp -lmvnc
+make[3]: Leaving directory '/ncsdk/examples/caffe/GoogLeNet'
+make -C SqueezeNet 
+make[3]: Entering directory '/ncsdk/examples/caffe/SqueezeNet'
+
+making prereqs
+(cd ../../data/ilsvrc12; make)
+make[4]: Entering directory '/ncsdk/examples/data/ilsvrc12'
+make[4]: Leaving directory '/ncsdk/examples/data/ilsvrc12'
+LICENSE file already exists
+
+making prototxt
+Prototxt file already exists
+
+making profile
+mvNCProfile deploy.prototxt -s 12
+[1mmvNCProfile v02.00, Copyright @ Intel Corporation 2017[0m
+
+[91m****** WARNING: using empty weights ******[0m
+Blob generated
+USB: Transferring Data...
+[94mTime to Execute :  64.71  ms[39m
+USB: Myriad Execution Finished
+[94mTime to Execute :  49.92  ms[39m
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+Network Summary
+
+Detailed Per Layer Profile
+                                                               Bandwidth   time
+#    Name                                                MFLOPs  (MB/s)    (ms)
+===============================================================================
+0    data                                                   0.0 68758.0   0.004
+1    conv1                                                347.7  1635.6   8.855
+2    pool1                                                  2.6  1448.8   1.557
+3    fire2/squeeze1x1                                       9.3  1208.0   0.461
+4    fire2/expand1x1                                        6.2   182.5   0.517
+5    fire2/expand3x3                                       55.8   513.6   1.654
+6    fire3/squeeze1x1                                      12.4  1486.1   0.500
+7    fire3/expand1x1                                        6.2   184.7   0.511
+8    fire3/expand3x3                                       55.8   517.2   1.643
+9    fire4/squeeze1x1                                      24.8  1032.2   0.723
+10   fire4/expand1x1                                       24.8   193.7   0.995
+11   fire4/expand3x3                                      223.0   397.2   4.366
+12   pool4                                                  1.7  1317.3   1.121
+13   fire5/squeeze1x1                                      11.9   819.5   0.453
+14   fire5/expand1x1                                        6.0   165.0   0.318
+15   fire5/expand3x3                                       53.7   393.8   1.201
+16   fire6/squeeze1x1                                      17.9   719.0   0.528
+17   fire6/expand1x1                                       13.4   164.2   0.516
+18   fire6/expand3x3                                      120.9   266.5   2.860
+19   fire7/squeeze1x1                                      26.9   852.2   0.668
+20   fire7/expand1x1                                       13.4   164.9   0.514
+21   fire7/expand3x3                                      120.9   265.0   2.876
+22   fire8/squeeze1x1                                      35.8   751.8   0.773
+23   fire8/expand1x1                                       23.9   168.4   0.717
+24   fire8/expand3x3                                      215.0   198.9   5.463
+25   pool8                                                  0.8  1318.5   0.540
+26   fire9/squeeze1x1                                      11.1   596.3   0.382
+27   fire9/expand1x1                                        5.5   155.2   0.337
+28   fire9/expand3x3                                       49.8   301.7   1.562
+29   conv10                                               173.1   338.1   3.376
+30   pool10                                                 0.3   676.5   0.476
+31   prob                                                   0.0    10.0   0.191
+-------------------------------------------------------------------------------
+                                   Total inference time                   46.66
+-------------------------------------------------------------------------------
+Generating Profile Report 'output_report.html'...
+
+making caffemodel
+caffemodel file already exists
+
+making check
+mvNCCheck -w squeezenet_v1.0.caffemodel -i ../../data/images/cat.jpg -s 12 -id 281  deploy.prototxt -S 255 -M 120 -metric top1
+[1mmvNCCheck v02.00, Copyright @ Intel Corporation 2017[0m
+
+Blob generated
+USB: Transferring Data...
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+
+Result: Validation Pass
+
+Result:  (1000, 1, 1)
+1) 281 0.55811
+Expected:  (1000, 1, 1)
+1) 281 0.56006
+------------------------------------------------------------
+ Obtained values 
+------------------------------------------------------------
+ Obtained Min Pixel Accuracy: 0.47951177693903446% (max allowed=2%), Pass
+ Obtained Average Pixel Accuracy: 0.0019026047084480524% (max allowed=1%), Pass
+ Obtained Percentage of wrong values: 0.0% (max allowed=0%), Pass
+ Obtained Pixel-wise L2 error: 0.025980485955613475% (max allowed=1%), Pass
+ Obtained Global Sum Difference: 0.010655701160430908
+------------------------------------------------------------
+
+making compile
+mvNCCompile -w squeezenet_v1.0.caffemodel -s 12 deploy.prototxt
+[1mmvNCCompile v02.00, Copyright @ Intel Corporation 2017[0m
+
+Blob generated
+
+making cpp
+g++ cpp/run.cpp -o cpp/run_cpp -lmvnc
+make[3]: Leaving directory '/ncsdk/examples/caffe/SqueezeNet'
+make[2]: Leaving directory '/ncsdk/examples/caffe'
+make -C tensorflow/. 
+make[2]: Entering directory '/ncsdk/examples/tensorflow'
+make -C inception_v3/. 
+make[3]: Entering directory '/ncsdk/examples/tensorflow/inception_v3'
+test -f output/inception-v3.meta || ((wget http://download.tensorflow.org/models/inception_v3_2016_08_28.tar.gz && tar zxf inception_v3_2016_08_28.tar.gz && rm inception_v3_2016_08_28.tar.gz) && ./inception-v3.py)
+mvNCProfile -s 4 output/inception-v3.meta -in=input -on=InceptionV3/Predictions/Reshape_1
+[1mmvNCProfile v02.00, Copyright @ Intel Corporation 2017[0m
+
+shape: (1, 299, 299, 3)
+res.shape:  (1, 1, 1, 1001)
+TensorFlow output shape:  (1, 1, 1001)
+Layer  InceptionV3/InceptionV3/Mixed_5c/Branch_0/Conv2d_0a_1x1/Relu  forced to im2col_v2, because its output is used in concat
+Blob generated
+USB: Transferring Data...
+[94mTime to Execute :  591.3  ms[39m
+USB: Myriad Execution Finished
+[94mTime to Execute :  566.17  ms[39m
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+Network Summary
+
+Detailed Per Layer Profile
+                                                               Bandwidth   time
+#     Name                                               MFLOPs  (MB/s)    (ms)
+===============================================================================
+0     InceptionV3/InceptionV3/Conv2d_1a_3x3/Relu           38.4  1013.7   4.544
+1     InceptionV3/InceptionV3/Conv2d_2a_3x3/Relu          398.3   619.1  19.727
+2     InceptionV3/InceptionV3/Conv2d_2b_3x3/Relu          796.6   334.5  35.591
+3     InceptionV3/InceptionV3/MaxPool_3a_3x3/MaxPool        3.1  1441.5   1.830
+4     InceptionV3/InceptionV3/Conv2d_3b_1x1/Relu           54.6   221.6   2.981
+5     InceptionV3/InceptionV3/Conv2d_4a_3x3/Relu         1393.7   137.8  55.053
+6     InceptionV3/InceptionV3/MaxPool_5a_3x3/MaxPool        2.1  1286.2   1.436
+7     ...ceptionV3/Mixed_5b/Branch_0/Conv2d_0a_1x1/Relu    30.1   354.4   1.332
+8     ...ceptionV3/Mixed_5b/Branch_1/Conv2d_0a_1x1/Relu    22.6   449.9   1.036
+9     ...ceptionV3/Mixed_5b/Branch_1/Conv2d_0b_5x5/Relu   188.2   340.4   8.675
+10    ...ceptionV3/Mixed_5b/Branch_2/Conv2d_0a_1x1/Relu    30.1   353.0   1.338
+11    ...ceptionV3/Mixed_5b/Branch_2/Conv2d_0b_3x3/Relu   135.5   166.8   8.712
+12    ...ceptionV3/Mixed_5b/Branch_2/Conv2d_0c_3x3/Relu   203.2   244.9   8.896
+13    ...ionV3/Mixed_5b/Branch_3/AvgPool_0a_3x3/AvgPool     4.2   592.9   0.757
+14    ...ceptionV3/Mixed_5b/Branch_3/Conv2d_0b_1x1/Relu    15.1   605.9   0.760
+15    ...ceptionV3/Mixed_5c/Branch_0/Conv2d_0a_1x1/Relu    40.1   356.3   1.767
+16    ...ceptionV3/Mixed_5c/Branch_1/Conv2d_0b_1x1/Relu    30.1   478.4   1.299
+17    ...ceptionV3/Mixed_5c/Branch_1/Conv_1_0c_5x5/Relu   188.2   339.6   8.696
+18    ...ceptionV3/Mixed_5c/Branch_2/Conv2d_0a_1x1/Relu    40.1   358.8   1.754
+19    ...ceptionV3/Mixed_5c/Branch_2/Conv2d_0b_3x3/Relu   135.5   166.9   8.707
+20    ...ceptionV3/Mixed_5c/Branch_2/Conv2d_0c_3x3/Relu   203.2   244.9   8.894
+21    ...ionV3/Mixed_5c/Branch_3/AvgPool_0a_3x3/AvgPool     5.6   617.4   0.970
+22    ...ceptionV3/Mixed_5c/Branch_3/Conv2d_0b_1x1/Relu    40.1   358.3   1.757
+23    ...ceptionV3/Mixed_5d/Branch_0/Conv2d_0a_1x1/Relu    45.2   361.9   1.957
+24    ...ceptionV3/Mixed_5d/Branch_1/Conv2d_0a_1x1/Relu    33.9   475.9   1.470
+25    ...ceptionV3/Mixed_5d/Branch_1/Conv2d_0b_5x5/Relu   188.2   340.1   8.685
+26    ...ceptionV3/Mixed_5d/Branch_2/Conv2d_0a_1x1/Relu    45.2   364.0   1.946
+27    ...ceptionV3/Mixed_5d/Branch_2/Conv2d_0b_3x3/Relu   135.5   166.8   8.712
+28    ...ceptionV3/Mixed_5d/Branch_2/Conv2d_0c_3x3/Relu   203.2   244.9   8.895
+29    ...ionV3/Mixed_5d/Branch_3/AvgPool_0a_3x3/AvgPool     6.4   602.7   1.117
+30    ...ceptionV3/Mixed_5d/Branch_3/Conv2d_0b_1x1/Relu    45.2   362.4   1.954
+31    ...ceptionV3/Mixed_6a/Branch_0/Conv2d_1a_1x1/Relu   575.3   315.3  25.252
+32    ...ceptionV3/Mixed_6a/Branch_1/Conv2d_0a_1x1/Relu    45.2   362.8   1.952
+33    ...ceptionV3/Mixed_6a/Branch_1/Conv2d_0b_3x3/Relu   135.5   167.0   8.703
+34    ...ceptionV3/Mixed_6a/Branch_1/Conv2d_1a_1x1/Relu    47.9   890.7   2.446
+35    ...ionV3/Mixed_6a/Branch_2/MaxPool_1a_3x3/MaxPool     0.7  1416.1   0.476
+36    ...ceptionV3/Mixed_6b/Branch_0/Conv2d_0a_1x1/Relu    85.2   189.8   3.713
+37    ...ceptionV3/Mixed_6b/Branch_1/Conv2d_0a_1x1/Relu    56.8   236.0   2.589
+38    ...ceptionV3/Mixed_6b/Branch_1/Conv2d_0b_1x7/Relu    66.3   198.0   3.608
+39    ...ceptionV3/Mixed_6b/Branch_1/Conv2d_0c_7x1/Relu    99.4   183.5   4.494
+40    ...ceptionV3/Mixed_6b/Branch_2/Conv2d_0a_1x1/Relu    56.8   235.3   2.597
+41    ...ceptionV3/Mixed_6b/Branch_2/Conv2d_0b_7x1/Relu    66.3   201.1   3.553
+42    ...ceptionV3/Mixed_6b/Branch_2/Conv2d_0c_1x7/Relu    66.3   198.1   3.606
+43    ...ceptionV3/Mixed_6b/Branch_2/Conv2d_0d_7x1/Relu    66.3   200.8   3.557
+44    ...ceptionV3/Mixed_6b/Branch_2/Conv2d_0e_1x7/Relu    99.4   181.7   4.538
+45    ...ionV3/Mixed_6b/Branch_3/AvgPool_0a_3x3/AvgPool     4.0   528.3   0.804
+46    ...ceptionV3/Mixed_6b/Branch_3/Conv2d_0b_1x1/Relu    85.2   189.9   3.712
+47    ...ceptionV3/Mixed_6c/Branch_0/Conv2d_0a_1x1/Relu    85.2   190.1   3.709
+48    ...ceptionV3/Mixed_6c/Branch_1/Conv2d_0a_1x1/Relu    71.0   169.6   3.880
+49    ...ceptionV3/Mixed_6c/Branch_1/Conv2d_0b_1x7/Relu   103.6   155.1   6.197
+50    ...ceptionV3/Mixed_6c/Branch_1/Conv2d_0c_7x1/Relu   124.3   174.2   5.914
+51    ...ceptionV3/Mixed_6c/Branch_2/Conv2d_0a_1x1/Relu    71.0   167.9   3.919
+52    ...ceptionV3/Mixed_6c/Branch_2/Conv2d_0b_7x1/Relu   103.6   156.9   6.128
+53    ...ceptionV3/Mixed_6c/Branch_2/Conv2d_0c_1x7/Relu   103.6   154.6   6.218
+54    ...ceptionV3/Mixed_6c/Branch_2/Conv2d_0d_7x1/Relu   103.6   156.3   6.151
+55    ...ceptionV3/Mixed_6c/Branch_2/Conv2d_0e_1x7/Relu   124.3   172.2   5.982
+56    ...ionV3/Mixed_6c/Branch_3/AvgPool_0a_3x3/AvgPool     4.0   527.0   0.806
+57    ...ceptionV3/Mixed_6c/Branch_3/Conv2d_0b_1x1/Relu    85.2   187.9   3.752
+58    ...ceptionV3/Mixed_6d/Branch_0/Conv2d_0a_1x1/Relu    85.2   189.8   3.714
+59    ...ceptionV3/Mixed_6d/Branch_1/Conv2d_0a_1x1/Relu    71.0   169.6   3.880
+60    ...ceptionV3/Mixed_6d/Branch_1/Conv2d_0b_1x7/Relu   103.6   155.1   6.199
+61    ...ceptionV3/Mixed_6d/Branch_1/Conv2d_0c_7x1/Relu   124.3   174.2   5.913
+62    ...ceptionV3/Mixed_6d/Branch_2/Conv2d_0a_1x1/Relu    71.0   167.7   3.925
+63    ...ceptionV3/Mixed_6d/Branch_2/Conv2d_0b_7x1/Relu   103.6   156.7   6.133
+64    ...ceptionV3/Mixed_6d/Branch_2/Conv2d_0c_1x7/Relu   103.6   154.7   6.215
+65    ...ceptionV3/Mixed_6d/Branch_2/Conv2d_0d_7x1/Relu   103.6   156.2   6.153
+66    ...ceptionV3/Mixed_6d/Branch_2/Conv2d_0e_1x7/Relu   124.3   172.3   5.979
+67    ...ionV3/Mixed_6d/Branch_3/AvgPool_0a_3x3/AvgPool     4.0   507.4   0.837
+68    ...ceptionV3/Mixed_6d/Branch_3/Conv2d_0b_1x1/Relu    85.2   187.9   3.751
+69    ...ceptionV3/Mixed_6e/Branch_0/Conv2d_0a_1x1/Relu    85.2   190.0   3.711
+70    ...ceptionV3/Mixed_6e/Branch_1/Conv2d_0a_1x1/Relu    85.2   189.9   3.713
+71    ...ceptionV3/Mixed_6e/Branch_1/Conv2d_0b_1x7/Relu   149.2   181.6   6.805
+72    ...ceptionV3/Mixed_6e/Branch_1/Conv2d_0c_7x1/Relu   149.2   184.2   6.707
+73    ...ceptionV3/Mixed_6e/Branch_2/Conv2d_0a_1x1/Relu    85.2   189.9   3.712
+74    ...ceptionV3/Mixed_6e/Branch_2/Conv2d_0b_7x1/Relu   149.2   184.0   6.714
+75    ...ceptionV3/Mixed_6e/Branch_2/Conv2d_0c_1x7/Relu   149.2   181.8   6.796
+76    ...ceptionV3/Mixed_6e/Branch_2/Conv2d_0d_7x1/Relu   149.2   184.2   6.709
+77    ...ceptionV3/Mixed_6e/Branch_2/Conv2d_0e_1x7/Relu   149.2   181.6   6.802
+78    ...ionV3/Mixed_6e/Branch_3/AvgPool_0a_3x3/AvgPool     4.0   531.8   0.799
+79    ...ceptionV3/Mixed_6e/Branch_3/Conv2d_0b_1x1/Relu    85.2   190.0   3.711
+80    ...ceptionV3/Mixed_7a/Branch_0/Conv2d_0a_1x1/Relu    85.2   190.0   3.709
+81    ...ceptionV3/Mixed_7a/Branch_0/Conv2d_1a_3x3/Relu    70.8   579.0   3.476
+82    ...ceptionV3/Mixed_7a/Branch_1/Conv2d_0a_1x1/Relu    85.2   190.0   3.710
+83    ...ceptionV3/Mixed_7a/Branch_1/Conv2d_0b_1x7/Relu   149.2   181.7   6.798
+84    ...ceptionV3/Mixed_7a/Branch_1/Conv2d_0c_7x1/Relu   149.2   184.2   6.708
+85    ...ceptionV3/Mixed_7a/Branch_1/Conv2d_1a_3x3/Relu    42.5   736.3   2.158
+86    ...ionV3/Mixed_7a/Branch_2/MaxPool_1a_3x3/MaxPool     0.4  1269.4   0.335
+87    ...ceptionV3/Mixed_7b/Branch_0/Conv2d_0a_1x1/Relu    52.4   350.9   2.673
+88    ...ceptionV3/Mixed_7b/Branch_1/Conv2d_0a_1x1/Relu    62.9   360.9   3.033
+89    ...ceptionV3/Mixed_7b/Branch_1/Conv2d_0b_1x3/Relu    56.6   341.6   2.888
+90    ...ceptionV3/Mixed_7b/Branch_1/Conv2d_0b_3x1/Relu    56.6   347.6   2.838
+91    ...ceptionV3/Mixed_7b/Branch_2/Conv2d_0a_1x1/Relu    73.4   342.1   3.657
+92    ...ceptionV3/Mixed_7b/Branch_2/Conv2d_0b_3x3/Relu   198.2   391.7   8.812
+93    ...ceptionV3/Mixed_7b/Branch_2/Conv2d_0c_1x3/Relu    56.6   345.7   2.854
+94    ...ceptionV3/Mixed_7b/Branch_2/Conv2d_0d_3x1/Relu    56.6   347.9   2.836
+95    ...ionV3/Mixed_7b/Branch_3/AvgPool_0a_3x3/AvgPool     1.5   395.7   0.401
+96    ...ceptionV3/Mixed_7b/Branch_3/Conv2d_0b_1x1/Relu    31.5   370.1   1.690
+97    ...ceptionV3/Mixed_7c/Branch_0/Conv2d_0a_1x1/Relu    83.9   387.8   3.870
+98    ...ceptionV3/Mixed_7c/Branch_1/Conv2d_0a_1x1/Relu   100.7   403.1   4.343
+99    ...ceptionV3/Mixed_7c/Branch_1/Conv2d_0b_1x3/Relu    56.6   346.1   2.851
+100   ...ceptionV3/Mixed_7c/Branch_1/Conv2d_0c_3x1/Relu    56.6   347.7   2.838
+101   ...ceptionV3/Mixed_7c/Branch_2/Conv2d_0a_1x1/Relu   117.4   370.8   5.395
+102   ...ceptionV3/Mixed_7c/Branch_2/Conv2d_0b_3x3/Relu   198.2   394.0   8.761
+103   ...ceptionV3/Mixed_7c/Branch_2/Conv2d_0c_1x3/Relu    56.6   347.1   2.843
+104   ...ceptionV3/Mixed_7c/Branch_2/Conv2d_0d_3x1/Relu    56.6   348.1   2.834
+105   ...ionV3/Mixed_7c/Branch_3/AvgPool_0a_3x3/AvgPool     2.4   392.2   0.647
+106   ...ceptionV3/Mixed_7c/Branch_3/Conv2d_0b_1x1/Relu    50.3   430.1   2.326
+107   InceptionV3/AuxLogits/AvgPool_1a_5x5/AvgPool          1.0   771.2   0.551
+108   InceptionV3/AuxLogits/Conv2d_1b_1x1/Relu              4.9   391.1   0.574
+109   InceptionV3/AuxLogits/Conv2d_2a_5x5/Relu              4.9  1145.1   4.259
+110   InceptionV3/AuxLogits/Conv2d_2b_1x1/BiasAdd           1.5  2033.1   0.723
+111   InceptionV3/Logits/AvgPool_1a_8x8/AvgPool             0.3  1061.3   0.239
+112   InceptionV3/Logits/Conv2d_1c_1x1/BiasAdd              4.1  2112.6   1.854
+113   InceptionV3/Predictions/Softmax                       0.0    19.9   0.192
+-------------------------------------------------------------------------------
+                                   Total inference time                  562.06
+-------------------------------------------------------------------------------
+Generating Profile Report 'output_report.html'...
+mvNCCheck -s 4 output/inception-v3.meta -in=input -on=InceptionV3/Predictions/Reshape_1 -i ../../data/images/cat.jpg -metric top1 -cs 0,1,2
+[1mmvNCCheck v02.00, Copyright @ Intel Corporation 2017[0m
+
+shape: (1, 299, 299, 3)
+res.shape:  (1, 1, 1, 1001)
+TensorFlow output shape:  (1, 1, 1001)
+Layer  InceptionV3/InceptionV3/Mixed_5c/Branch_0/Conv2d_0a_1x1/Relu  forced to im2col_v2, because its output is used in concat
+Blob generated
+USB: Transferring Data...
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+
+Result: Validation Pass
+
+Result:  (1, 1, 1001)
+1) 282 0.55127
+Expected:  (1, 1, 1001)
+1) 282 0.557058
+------------------------------------------------------------
+ Obtained values 
+------------------------------------------------------------
+ Obtained Min Pixel Accuracy: 1.392059214413166% (max allowed=2%), Pass
+ Obtained Average Pixel Accuracy: 0.005413443432189524% (max allowed=1%), Pass
+ Obtained Percentage of wrong values: 0.0% (max allowed=0%), Pass
+ Obtained Pixel-wise L2 error: 0.055187213227714436% (max allowed=1%), Pass
+ Obtained Global Sum Difference: 0.030186183750629425
+------------------------------------------------------------
+test -f graph || mvNCCompile -s 4 output/inception-v3.meta -in=input -on=InceptionV3/Predictions/Reshape_1
+make[3]: Leaving directory '/ncsdk/examples/tensorflow/inception_v3'
+make -C inception_v1/. 
+make[3]: Entering directory '/ncsdk/examples/tensorflow/inception_v1'
+test -f output/inception-v1.meta || ((wget http://download.tensorflow.org/models/inception_v1_2016_08_28.tar.gz && tar zxf inception_v1_2016_08_28.tar.gz && rm inception_v1_2016_08_28.tar.gz) && ./inception-v1.py)
+mvNCProfile -s 12 output/inception-v1.meta -in=input -on=InceptionV1/Logits/Predictions/Reshape_1
+[1mmvNCProfile v02.00, Copyright @ Intel Corporation 2017[0m
+
+shape: (1, 224, 224, 3)
+res.shape:  (1, 1, 1, 1001)
+TensorFlow output shape:  (1, 1, 1001)
+Layer  InceptionV1/InceptionV1/Mixed_3c/Branch_0/Conv2d_0a_1x1/Relu  forced to im2col_v2, because its output is used in concat
+Blob generated
+USB: Transferring Data...
+[94mTime to Execute :  109.54  ms[39m
+USB: Myriad Execution Finished
+[94mTime to Execute :  91.7  ms[39m
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+Network Summary
+
+Detailed Per Layer Profile
+                                                               Bandwidth   time
+#    Name                                                MFLOPs  (MB/s)    (ms)
+===============================================================================
+0    InceptionV1/InceptionV1/Conv2d_1a_7x7/Relu           236.0  1920.2   7.339
+1    InceptionV1/InceptionV1/MaxPool_2a_3x3/MaxPool         1.8  1352.4   1.132
+2    InceptionV1/InceptionV1/Conv2d_2b_1x1/Relu            25.7   477.4   0.819
+3    InceptionV1/InceptionV1/Conv2d_2c_3x3/Relu           693.6   306.6  11.934
+4    InceptionV1/InceptionV1/MaxPool_3a_3x3/MaxPool         1.4  1400.6   0.820
+5    ...nceptionV1/Mixed_3b/Branch_0/Conv2d_0a_1x1/Relu    19.3   552.5   0.562
+6    ...nceptionV1/Mixed_3b/Branch_1/Conv2d_0a_1x1/Relu    28.9   452.8   0.712
+7    ...nceptionV1/Mixed_3b/Branch_1/Conv2d_0b_3x3/Relu   173.4   316.5   4.755
+8    ...nceptionV1/Mixed_3b/Branch_2/Conv2d_0a_1x1/Relu     4.8  1042.8   0.281
+9    ...nceptionV1/Mixed_3b/Branch_2/Conv2d_0b_3x3/Relu     7.2   523.1   0.430
+10   ...tionV1/Mixed_3b/Branch_3/MaxPool_0a_3x3/MaxPool     1.4   649.7   0.442
+11   ...nceptionV1/Mixed_3b/Branch_3/Conv2d_0b_1x1/Relu     9.6   653.3   0.457
+12   ...nceptionV1/Mixed_3c/Branch_0/Conv2d_0a_1x1/Relu    51.4   445.7   1.000
+13   ...nceptionV1/Mixed_3c/Branch_1/Conv2d_0a_1x1/Relu    51.4   444.9   1.001
+14   ...nceptionV1/Mixed_3c/Branch_1/Conv2d_0b_3x3/Relu   346.8   262.1   8.195
+15   ...nceptionV1/Mixed_3c/Branch_2/Conv2d_0a_1x1/Relu    12.8   889.0   0.448
+16   ...nceptionV1/Mixed_3c/Branch_2/Conv2d_0b_3x3/Relu    43.4   429.3   1.130
+17   ...tionV1/Mixed_3c/Branch_3/MaxPool_0a_3x3/MaxPool     1.8   677.5   0.566
+18   ...nceptionV1/Mixed_3c/Branch_3/Conv2d_0b_1x1/Relu    25.7   633.7   0.654
+19   InceptionV1/InceptionV1/MaxPool_4a_3x3/MaxPool         0.8  1218.6   0.590
+20   ...nceptionV1/Mixed_4b/Branch_0/Conv2d_0a_1x1/Relu    36.1   371.1   0.958
+21   ...nceptionV1/Mixed_4b/Branch_1/Conv2d_0a_1x1/Relu    18.1   490.9   0.545
+22   ...nceptionV1/Mixed_4b/Branch_1/Conv2d_0b_3x3/Relu    70.4   303.8   2.203
+23   ...nceptionV1/Mixed_4b/Branch_2/Conv2d_0a_1x1/Relu     3.0   764.6   0.254
+24   ...nceptionV1/Mixed_4b/Branch_2/Conv2d_0b_3x3/Relu     2.7   236.7   0.287
+25   ...tionV1/Mixed_4b/Branch_3/MaxPool_0a_3x3/MaxPool     0.8   637.1   0.283
+26   ...nceptionV1/Mixed_4b/Branch_3/Conv2d_0b_1x1/Relu    12.0   568.5   0.419
+27   ...nceptionV1/Mixed_4c/Branch_0/Conv2d_0a_1x1/Relu    32.1   340.3   1.022
+28   ...nceptionV1/Mixed_4c/Branch_1/Conv2d_0a_1x1/Relu    22.5   401.6   0.750
+29   ...nceptionV1/Mixed_4c/Branch_1/Conv2d_0b_3x3/Relu    88.5   284.7   2.850
+30   ...nceptionV1/Mixed_4c/Branch_2/Conv2d_0a_1x1/Relu     4.8   575.8   0.373
+31   ...nceptionV1/Mixed_4c/Branch_2/Conv2d_0b_3x3/Relu     5.4   291.1   0.372
+32   ...tionV1/Mixed_4c/Branch_3/MaxPool_0a_3x3/MaxPool     0.9   634.2   0.303
+33   ...nceptionV1/Mixed_4c/Branch_3/Conv2d_0b_1x1/Relu    12.8   580.6   0.438
+34   ...nceptionV1/Mixed_4d/Branch_0/Conv2d_0a_1x1/Relu    25.7   367.7   0.861
+35   ...nceptionV1/Mixed_4d/Branch_1/Conv2d_0a_1x1/Relu    25.7   392.9   0.806
+36   ...nceptionV1/Mixed_4d/Branch_1/Conv2d_0b_3x3/Relu   115.6   290.4   3.435
+37   ...nceptionV1/Mixed_4d/Branch_2/Conv2d_0a_1x1/Relu     4.8   569.2   0.378
+38   ...nceptionV1/Mixed_4d/Branch_2/Conv2d_0b_3x3/Relu     5.4   300.0   0.361
+39   ...tionV1/Mixed_4d/Branch_3/MaxPool_0a_3x3/MaxPool     0.9   634.1   0.303
+40   ...nceptionV1/Mixed_4d/Branch_3/Conv2d_0b_1x1/Relu    12.8   583.4   0.435
+41   ...nceptionV1/Mixed_4e/Branch_0/Conv2d_0a_1x1/Relu    22.5   400.5   0.752
+42   ...nceptionV1/Mixed_4e/Branch_1/Conv2d_0a_1x1/Relu    28.9   490.2   0.678
+43   ...nceptionV1/Mixed_4e/Branch_1/Conv2d_0b_3x3/Relu   146.3   403.7   2.976
+44   ...nceptionV1/Mixed_4e/Branch_2/Conv2d_0a_1x1/Relu     6.4   690.8   0.322
+45   ...nceptionV1/Mixed_4e/Branch_2/Conv2d_0b_3x3/Relu     7.2   383.9   0.375
+46   ...tionV1/Mixed_4e/Branch_3/MaxPool_0a_3x3/MaxPool     0.9   632.7   0.304
+47   ...nceptionV1/Mixed_4e/Branch_3/Conv2d_0b_1x1/Relu    12.8   582.2   0.436
+48   ...nceptionV1/Mixed_4f/Branch_0/Conv2d_0a_1x1/Relu    53.0   298.5   1.526
+49   ...nceptionV1/Mixed_4f/Branch_1/Conv2d_0a_1x1/Relu    33.1   276.0   1.300
+50   ...nceptionV1/Mixed_4f/Branch_1/Conv2d_0b_3x3/Relu   180.6   293.2   4.852
+51   ...nceptionV1/Mixed_4f/Branch_2/Conv2d_0a_1x1/Relu     6.6   492.4   0.466
+52   ...nceptionV1/Mixed_4f/Branch_2/Conv2d_0b_3x3/Relu    14.5   371.9   0.484
+53   ...tionV1/Mixed_4f/Branch_3/MaxPool_0a_3x3/MaxPool     0.9   622.4   0.319
+54   ...nceptionV1/Mixed_4f/Branch_3/Conv2d_0b_1x1/Relu    26.5   447.7   0.729
+55   InceptionV1/InceptionV1/MaxPool_5a_2x2/MaxPool         0.2   952.2   0.328
+56   ...nceptionV1/Mixed_5b/Branch_0/Conv2d_0a_1x1/Relu    20.9   609.7   0.795
+57   ...nceptionV1/Mixed_5b/Branch_1/Conv2d_0a_1x1/Relu    13.0   569.3   0.583
+58   ...nceptionV1/Mixed_5b/Branch_1/Conv2d_0b_3x3/Relu    45.2   594.1   1.715
+59   ...nceptionV1/Mixed_5b/Branch_2/Conv2d_0a_1x1/Relu     2.6   325.0   0.396
+60   ...nceptionV1/Mixed_5b/Branch_2/Conv2d_0a_3x3/Relu     3.6   313.1   0.318
+61   ...tionV1/Mixed_5b/Branch_3/MaxPool_0a_3x3/MaxPool     0.4   545.3   0.146
+62   ...nceptionV1/Mixed_5b/Branch_3/Conv2d_0b_1x1/Relu    10.4   513.4   0.548
+63   ...nceptionV1/Mixed_5c/Branch_0/Conv2d_0a_1x1/Relu    31.3   608.7   1.130
+64   ...nceptionV1/Mixed_5c/Branch_1/Conv2d_0a_1x1/Relu    15.7   608.6   0.629
+65   ...nceptionV1/Mixed_5c/Branch_1/Conv2d_0b_3x3/Relu    65.0   582.5   2.461
+66   ...nceptionV1/Mixed_5c/Branch_2/Conv2d_0a_1x1/Relu     3.9   376.5   0.409
+67   ...nceptionV1/Mixed_5c/Branch_2/Conv2d_0b_3x3/Relu     5.4   423.0   0.350
+68   ...tionV1/Mixed_5c/Branch_3/MaxPool_0a_3x3/MaxPool     0.4   544.4   0.146
+69   ...nceptionV1/Mixed_5c/Branch_3/Conv2d_0b_1x1/Relu    10.4   513.8   0.547
+70   InceptionV1/Logits/MaxPool_0a_7x7/AvgPool              0.1   414.1   0.236
+71   InceptionV1/Logits/Conv2d_0c_1x1/BiasAdd               2.1  2070.1   0.946
+72   InceptionV1/Logits/Predictions/Softmax                 0.0    20.0   0.191
+-------------------------------------------------------------------------------
+                                   Total inference time                   88.30
+-------------------------------------------------------------------------------
+Generating Profile Report 'output_report.html'...
+mvNCCheck -s 12 output/inception-v1.meta -in=input -on=InceptionV1/Logits/Predictions/Reshape_1 -i ../../data/images/cat.jpg -metric top1 -cs 2,1,0
+[1mmvNCCheck v02.00, Copyright @ Intel Corporation 2017[0m
+
+shape: (1, 224, 224, 3)
+res.shape:  (1, 1, 1, 1001)
+TensorFlow output shape:  (1, 1, 1001)
+Layer  InceptionV1/InceptionV1/Mixed_3c/Branch_0/Conv2d_0a_1x1/Relu  forced to im2col_v2, because its output is used in concat
+Blob generated
+USB: Transferring Data...
+USB: Myriad Execution Finished
+USB: Myriad Connection Closing.
+USB: Myriad Connection Closed.
+
+Result: Validation Pass
+
+Result:  (1, 1, 1001)
+1) 282 0.25366
+Expected:  (1, 1, 1001)
+1) 282 0.253802
+------------------------------------------------------------
+ Obtained values 
+------------------------------------------------------------
+ Obtained Min Pixel Accuracy: 1.2532906606793404% (max allowed=2%), Pass
+ Obtained Average Pixel Accuracy: 0.00567044953641016% (max allowed=1%), Pass
+ Obtained Percentage of wrong values: 0.0% (max allowed=0%), Pass
+ Obtained Pixel-wise L2 error: 0.04215868576446213% (max allowed=1%), Pass
+ Obtained Global Sum Difference: 0.014406103640794754
+------------------------------------------------------------
+test -f graph || mvNCCompile -s 12 output/inception-v1.meta -in=input -on=InceptionV1/Logits/Predictions/Reshape_1
+make[3]: Leaving directory '/ncsdk/examples/tensorflow/inception_v1'
+make[2]: Leaving directory '/ncsdk/examples/tensorflow'
+make -C data/. 
+make[2]: Entering directory '/ncsdk/examples/data'
+Possible Make targets
+  make help - shows this message
+  make clean - Removes all temp files from all directories
+make[2]: Leaving directory '/ncsdk/examples/data'
+make[1]: Leaving directory '/ncsdk/examples'
