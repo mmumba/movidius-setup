@@ -78,6 +78,13 @@ Running docker the following worked with test image inference run popping up aft
 ```
 'make install' throws an error: "Installation failed. Error on line 630"
 but make examples still works afterwards.
+If you specifically want NCSDK2, use
+
+```bash
+   git clone -b ncsdk2 https://github.com/movidius/ncappzoo.git
+```
+from: https://github.com/movidius/ncappzoo/
+Note: "At some point in the future the NCSDK 2.x projects will move to the master as 1.x becomes obsolete."
 
 ```bash    
     make examples
@@ -86,7 +93,7 @@ but make examples still works afterwards.
     make run 
 ```
 image should still pop up with correct inference. 
- 
+
 
 
 # Arch of NCS. Leon + Shave processors:
